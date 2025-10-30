@@ -3,6 +3,7 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "typescript": "^5.9.3",
+    "wabt": "^1.0.38",
     "ws": "^8.18.3"
   },
   "devDependencies": {

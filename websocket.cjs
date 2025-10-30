@@ -4,7 +4,18 @@ const config = require("./config.json")
 let clients = {}
 
 function tagm(o){
-    return `${o._socket.remoteAddress.replace("::1", "localhost")}:${o._socket.remotePort}`
+    return `${o._socket.remoteAddress}:${o._socket.remotePort}`
+}
+
+function getI(req){
+    return {
+        ip: req.socket.remoteAddress,
+        port: req.socket.remotePort
+    }
+}
+
+function isLocal(ip){
+    config.localhostIPs.forEach(ipC => {if(ipC === ip) return true})
 }
 
 // init list (prolly wont be any tbh)
@@ -20,9 +31,10 @@ function find(tag){
 
 wss.on('connection', function(ws){
     const tag = tagm(ws)
-    const ip = ws._socket.remoteAddress.replace("::1", "localhost")
+    const ip = ws._socket.remoteAddress
     console.log(`[+] New Connection [${tag}]🆕`)
     clients[tag] = ws
+    // fix this make sure its comming from /admin
     // broadcast to admin panel
     ws.send(JSON.stringify({
         type: 'Add',
@@ -40,7 +52,7 @@ wss.on('connection', function(ws){
     ws.on('message', function(message){
         console.log(`[+] New Message [${message}] From [${tag}]🆕`)
         require('dotenv').config({"path":__dirname+"/admin/.env"})
-        if(message == process.env.KEY && ip == "localhost"){
+        if(message == process.env.KEY && isLocal(ip)){
             // authed
             let tags = Object.keys(clients)
             ws.send(JSON.stringify({
@@ -61,4 +73,4 @@ wss.on('connection', function(ws){
     })
 })
 
-module.exports = {wsp, wss}
+module.exports = {wsp, wss, tagm}
