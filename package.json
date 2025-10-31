@@ -2,6 +2,8 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
     "typescript": "^5.9.3",
     "wabt": "^1.0.38",
     "ws": "^8.18.3"

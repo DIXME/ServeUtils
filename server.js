@@ -3,25 +3,13 @@ const config = require("./config.json")
 const express = require("express")
 const http = require("http")
 const fs = require("fs")
-
-async function loadWabt(){
-    const wabt = (await require("wabt")());
-    return wabt;
-}
+const middleware = require("./MiddleWare/middleware.js").bundle()
+console.log(middleware)
 
 const app = express()
 const server = http.createServer(app)
 
 app.use(express.static(__dirname+'/payload'))
-
-function localOnly(req, res, next) {
-  const ip = getI(req).ip
-
-  if (!isLocal(ip)) {
-    return res.status(403).send("Access denied.")
-  }
-  next()
-}
 
 app.use('/admin', localOnly, express.static(__dirname+"/admin"))
 // public is just for everyone, we could restrict this to a user or somthing
@@ -80,6 +68,12 @@ app.use('/view', function(req, res, next){
     }
     next();
 }, express.static(__dirname+'/public'))
+
+app.use('/compile', function(req, res, next){
+    // Comp Shit
+
+    next();
+}, express.static(__dirname+"/public"))
 
 server.on("upgrade", (req, socket, head) => {
     // make ws be hosted on /ws on the same port
